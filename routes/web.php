@@ -5,5 +5,12 @@ $router->get('/', [
 ]);
 
 $router->get('/result', [
-    'as' => 'show-result', 'uses' => 'ResultController@showResult'
+    'as' => 'show-result', 'uses' => 'ResultController@showResult',
+    'middleware' => 'validate'
 ]);
+
+$router->get('/download', [
+    'as' => 'download-result', 'uses' => 'ResultController@downloadResult',
+    'middleware' => 'validate'
+]);
+

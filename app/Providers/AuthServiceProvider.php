@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
+     * Register any application src.
      *
      * @return void
      */
@@ -19,7 +19,7 @@ class AuthServiceProvider extends ServiceProvider
     }
 
     /**
-     * Boot the authentication services for the application.
+     * Boot the authentication src for the application.
      *
      * @return void
      */
