@@ -20,11 +20,7 @@
         </div>
         <div class="form-group">
             <label for="months">Amount of payments:</label>
-            <select class="form-control" id="months" name="months">
-                @for ($i = 0; $i < 27; $i++)
-                    <option>{{ $i }}</option>
-                @endfor
-            </select>
+            <input type="text" class="form-control" name="months">
         </div>
         Beginning of payments: <br/>
         <div class="form-group">
