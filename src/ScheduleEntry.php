@@ -28,7 +28,12 @@ class ScheduleEntry
      */
     private $balance;
 
-    public function __construct(float $interest, float $credit, float $payment, Carbon $date, float $balance)
+    /**
+     * @var float
+     */
+    private $interestRate;
+
+    public function __construct(float $interestRate,float $interest, float $credit, float $payment, Carbon $date, float $balance)
     {
 
         $this->interest = $interest;
@@ -36,6 +41,7 @@ class ScheduleEntry
         $this->payment = $payment;
         $this->date = $date;
         $this->balance = $balance;
+        $this->interestRate = $interestRate;
     }
 
     /**
@@ -77,6 +83,11 @@ class ScheduleEntry
     public function getDate(): Carbon
     {
         return $this->date;
+    }
+
+    public function getInterestRate()
+    {
+        return $this->interestRate;
     }
 
 

@@ -14,6 +14,7 @@ use Carbon\Carbon;
 class ResultController extends BaseController
 {
     /**
+     *
      * @var CreditScheduleGenerator
      */
     private $scheduleGenerator;
@@ -45,7 +46,8 @@ class ResultController extends BaseController
             'Remaining amount',
             'Principal payment',
             'Interest payment',
-            'Total payment'
+            'Total payment',
+            'Interest rate'
         ];
         foreach ($output as $row) {
             $csv[] = [
@@ -54,7 +56,8 @@ class ResultController extends BaseController
                 $row['balance'],
                 $row['credit'],
                 $row['interest'],
-                $row['payment']
+                $row['payment'],
+                $row['percent']
             ];
         }
 
@@ -69,22 +72,39 @@ class ResultController extends BaseController
     {
         $res = [];
         $entries = $schedule->getEntries();
+        $residue = 0;
         foreach ($entries as $key => $entry) {
-            $row = $this->prepareRow($entry);
+            $row = $this->prepareRow($entry, $residue, $key+1 == count($entries));
+            $residue += $this->calculateResidue($entry);
             $row['payment_number'] = $key + 1;
             $res[] = $row;
         }
         return $res;
     }
 
-    private function prepareRow(ScheduleEntry $entry): array
+    private function calculateResidue(ScheduleEntry $entry) : float
+    {
+        $payment = $this->roundDown($entry->getPayment());
+        $paymentResidue = $entry->getPayment() - $payment;
+
+        $interest = $this->roundUp($entry->getInterest());
+        $interestResidue = $interest - $entry->getInterest();
+
+        $credit = $this->roundDown($entry->getCredit());
+        $creditResidue = $entry->getCredit() - $credit;
+
+        return $creditResidue + $paymentResidue + $interestResidue;
+    }
+
+    private function prepareRow(ScheduleEntry $entry, float $residue, bool $last): array
     {
         return [
-            'balance' => $entry->getBalance(),
-            'credit' => $entry->getCredit(),
-            'interest' => $entry->getInterest(),
-            'payment' => $entry->getPayment(),
+            'balance' => $this->roundUp($entry->getBalance() + $residue),
+            'credit' => $this->roundDown($last ? $entry->getCredit() + $residue : $entry->getCredit()),
+            'interest' => $this->roundUp($entry->getInterest()),
+            'payment' => $this->roundDown($last ? $entry->getPayment() + $residue : $entry->getPayment()),
             'date' => $entry->getDate()->toDateString(),
+            'percent' => $entry->getInterestRate() * 100,
         ];
     }
 
@@ -120,5 +140,15 @@ class ResultController extends BaseController
         $output = $this->prepareForOutput($schedule);
 
         return $output;
+    }
+
+    private function roundUp($sk)
+    {
+        return round($sk, 2);
+    }
+
+    private function roundDown($sk)
+    {
+        return floor($sk * 100)/100;
     }
 }

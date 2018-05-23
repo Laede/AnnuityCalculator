@@ -9,6 +9,7 @@
             <th>Principal payment</th>
             <th>Interest payment</th>
             <th>Total payment</th>
+            <th>Interest Rate</th>
         </tr>
         @foreach($schedule as $row)
         <tr>
@@ -18,6 +19,7 @@
             <td>{{ $row['credit'] }}</td>
             <td>{{ $row['interest'] }}</td>
             <td>{{ $row['payment'] }}</td>
+            <td>{{ $row['percent'] }}</td>
         </tr>
         @endforeach
     </table>

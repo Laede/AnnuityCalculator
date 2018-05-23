@@ -10,7 +10,7 @@ class CreditScheduleGenerator
         $rate = $credit->getRate();
         $payments = $credit->getPaymentsCount();
         $date = $credit->getDate();
-
+        $interestRate = $credit->getRate();
         $schedule = new Schedule();
         $payment = $this->calculatePayment($amount, $rate, $payments);
 
@@ -22,7 +22,7 @@ class CreditScheduleGenerator
             $date = $date->copy();
             $date->addMonth();
 
-            $schedule->addEntry(new ScheduleEntry($interest,$creditAmount,$payment,$date,$amount));
+            $schedule->addEntry(new ScheduleEntry($interestRate, $interest, $creditAmount, $payment, $date, $amount));
 
             $amount -= $creditAmount;
         }
